@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
-const processSchema = new mongoose.Schema({
-    studentName: { type: String, default: null },
-    class1: { type: Number, default: null },
-    class2: { type: Number, default: null },
-    class3: { type: Number, default: null },
-    class4: { type: Number, default: null },
-    process: { type: mongoose.Schema.Types.ObjectId, ref: 'processIntern' },
+const contactSchema = new mongoose.Schema({
+    email: { type: String, default: null },
+    address: { type: String, default: null },
+    phoneNumber: { type: String, default: null },
+    telPhoneNumber: { type: String, default: null },
+    linkFace: {  type: String, default: null },
+    linkInsta: {  type: String, default: null },
 })
 
-module.exports = mongoose.model('contact', processSchema);
+module.exports = mongoose.model('contact', contactSchema);

@@ -1,50 +1,48 @@
-const Submission = require('../models/submissionModel.js');
+const Contact = require('../models/contactModel.js');
 
-exports.getAllSubmission = async (req, res) => {
+exports.getAllContact = async (req, res) => {
     try {
-        const { processId } = req.params;
-        const submission = await Submission.find({ process: processId })            ;  // Busca todos os usuários
-        res.json(submission);
+        const contact = await Contact.find(); 
+        res.json(contact);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
-
-exports.createSubmission = async (req, res) => {
-    try {
-        const { processId } = req.body;
-        const newSubmission = new Submission({
-            ...req.body,
-            process: processId,
-    });
-        await newSubmission.save();  // Salva o novo usuário no MongoDB
-        res.status(201).json(newSubmission);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-};
-
-exports.updateSubmission = async (req, res) => {
+exports.createOrUpdateContact = async (req, res) => {
     const { id } = req.params;
-    try {
-        const updateSubmission = Submission.findByIdAndUpdate(id, req.body, {new: true});
-        if(!updateSubmission) {
-            return res.status(404).json({ message: 'Submissão não encontrada' });
+
+    if (id) {
+        try {
+            const updateContact = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+
+            if (!updateContact) {
+                return res.status(404).json({ message: 'Contato não encontrado' });
+            }
+
+            return res.status(200).json(updateContact);
+        } catch (err) {
+            return res.status(400).json({ message: err.message });
         }
-        res.status(200).json(updateSubmission);
+    }
+
+    // Se não foi passado um ID, cria um novo contato
+    try {
+        const newContact = new Contact(req.body);
+        await newContact.save();
+        return res.status(201).json(newContact);
     } catch (err) {
-        res.status(400).json({ message: 'err.message' });
+        return res.status(400).json({ message: err.message });
     }
 };
 
-exports.deleteSubmission = async (req, res) => {
+exports.deleteContact = async (req, res) => {
     const { id } = req.params; // Pega o ID da URL
     try {
-        const deletedSubmission = await Submission.findByIdAndDelete(id); // Remove o documento
-        if (!deletedSubmission) {
-            return res.status(404).json({ message: 'Submissão não encontrada' });
+        const deletedContact = await Contact.findByIdAndDelete(id); // Remove o documento
+        if (!deletedContact) {
+            return res.status(404).json({ message: 'Contato não encontrado' });
         }
-        res.status(200).json({ message: 'Submissão deletada com sucesso' });
+        res.status(200).json({ message: 'Contato deletado com sucesso' });
     } catch (err) {
         res.status(500).json({ message: err.message }); 
     }
